@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+		"outDir": "./build/",
+		"target": "es5",
+		"moduleResolution": "node",
+		"module": "commonjs",
+		"noImplicitAny": false,
+		"removeComments": true,
+		"sourceMap": true,
+		"jsx": "react",
+        "jsxFactory": "h",
+        "experimentalDecorators": true,
+	},
+	"suppressImplicitAnyIndexErrors": true,
+	"lib": [
+		"dom",
+		"es2017"
+	],
+	"baseUrl": ".",
+	"exclude": [
+		"build"
+	]
+}
