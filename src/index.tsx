@@ -38,7 +38,8 @@ renderApp(); // Initial render
 if ('serviceWorker' in navigator) {
 	// Use the window load event to keep the page load performant
 	window.addEventListener('load', () => {
-	  navigator.serviceWorker.register('/service-worker.js');
+	// @ts-ignore
+	  navigator.serviceWorker.register(((__webpack_public_path__)? __webpack_public_path__: "") + '/service-worker.js');
 	});
   }
   
