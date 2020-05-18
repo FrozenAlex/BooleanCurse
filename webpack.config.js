@@ -133,6 +133,7 @@ module.exports = (env, args) => {
                 },
             ]),
             ...(production)?[
+                new GenerateSW({}), // Don't add brotli files
                 new CompressionWebpackPlugin({ // Gzip
                     compressionOptions: {
                         level: 9,
@@ -150,7 +151,7 @@ module.exports = (env, args) => {
                     minRatio: 0.9,
                     deleteOriginalAssets: false,
                 }),
-                new GenerateSW(),
+               
             ] : []
         ]
     }
