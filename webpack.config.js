@@ -33,7 +33,8 @@ module.exports = (env, args) => {
         entry: './src/index.tsx',
         output: {
             filename: '[hash].bundle.js',
-            path: __dirname + '/build'
+            path: __dirname + '/build',
+            publicPath: "/BooleanCurse/",
         },
         devtool: production ? false : 'source-map',
         resolve: {
