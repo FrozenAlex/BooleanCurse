@@ -22,11 +22,9 @@ export default class App extends Component {
 		return (
 			<div id="app" className="mx-auto max-w-md">
 				<Header />
-				<Router onChange={this.handleRoute}>
-					<Home path="/" />
-					<Home path="/profile/" />
-					<Home path="/profile/:user" />
-				</Router>
+				{/* <Router  onChange={this.handleRoute}> */}
+					<Home />
+				{/* </Router> */}
 			</div>
 		);
 	}
