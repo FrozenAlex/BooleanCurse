@@ -1,10 +1,11 @@
 import { Component, h, JSX } from "preact";
-import { analyzeFunctionString } from "../../lib/Analysis";
+import { analyzeFunctionString, FunctionProperties, checkCompleteness } from "../../lib/Analysis";
+import Equation from "../components/Equation";
 
 export default class Home extends Component<
 	{},
 	{
-		operations: Array<Object>;
+		equations: Array<string>;
 		input: string;
 		output: string;
 	}
@@ -12,7 +13,7 @@ export default class Home extends Component<
 	constructor(props) {
 		super(props);
 		this.state = {
-			operations: [{}],
+			equations: ["1111","",""],
 			input: "",
 			output: "",
 		};
@@ -20,15 +21,9 @@ export default class Home extends Component<
 
 	calculate() {
 		try {
-			let result = analyzeFunctionString(this.state.input);
+			let result = checkCompleteness(this.state.equations);
 			this.setState({
-				output: `
-Сохраняет 0: ${result.keepsZero ? "Да" : "Нет"} ;
-Сохраняет 1: ${result.keepsOne ? "Да" : "Нет"} ;
-Монотонна: ${result.mono ? "Да" : "Нет"} ;
-Линейна: ${result.linear ? "Да" : "Нет"} ;
-Самодвойственна: ${result.s ? "Да" : "Нет"} ;
-				`,
+				output: `Система функций ${(result)?"полна":"не полна"}`,
 			});
 		} catch (err) {
 			this.setState({
@@ -37,51 +32,65 @@ export default class Home extends Component<
 		}
 	}
 
-	onChangeHandler(e: JSX.TargetedEvent<HTMLInputElement, Event>) {
-		e.preventDefault();
-		let value = e.currentTarget.value;
+	// Adds new equation
+	add() {
+		this.setState({
+			equations: [...this.state.equations, ""],
+		});
+	}
 
-		// Не принимать ничего кроме 0 и 1
-		let regex = /[^10]+/g;
+	// Adds new equation
+	del(index: number) {
+		
+		let equations = [...this.state.equations]
+		equations.splice(index, 1);
+		this.setState({
+			equations: equations
+		}, ()=>{
+			// Если не осталось то добавим новую
+			if (this.state.equations.length == 0) this.add(); 
+		});
+	}
 
-		console.log(value);
-		if (value && regex.test(value)) {
-			this.setState({
-				input: this.state.input,
-			});
-			return;
-		}
-
-		this.setState(
-			{
-				input: value,
-			},
-			() => {
-				if (value.length > 0) {
-					console.log("calc");
-					this.calculate();
-				}
-			}
-		);
+	onChangeHandler(key, value) {
+		let equations = [...this.state.equations];
+		equations[key] = value;
+		this.setState({ equations: equations }, this.calculate);
 	}
 
 	render() {
 		return (
 			<div>
-				<h3>Ввод формулы:</h3>
-				<input
-					class="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
-					type="text"
-					value={this.state.input}
-					onInput={this.onChangeHandler.bind(this)}
-				></input>
+				<h3>Ввод формулы (в виде кортежа значений (1111), пустые строки игнорируются):</h3>
+				<div>
+					{this.state.equations.map((element, index) => (
+						<Equation
+							key={index}
+							id={index}
+							value={element}
+							onChange={this.onChangeHandler.bind(this)}
+							onDelete={this.del.bind(this)}
+						/>
+					))}
+				</div>
+				
+				<div className="flex">
+				<button
+					class="block mx-auto bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
+					onClick={this.add.bind(this)}
+				>
+					Добавить формулу
+				</button>
+
 				<button
 					class="block mx-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
 					onClick={this.calculate.bind(this)}
 				>
 					Вычислить
 				</button>
-				<div id="output">{this.state.output}</div>
+				</div>
+				
+				<div id="output" className="text-center my-3">{this.state.output}</div>
 			</div>
 		);
 	}

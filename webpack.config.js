@@ -2,17 +2,17 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
-const {GenerateSW} = require('workbox-webpack-plugin');
+const { GenerateSW } = require('workbox-webpack-plugin');
 
 const path = require('path');
 
 const purgecss = require('@fullhuman/postcss-purgecss')({
-	content: [
-		'./src/**/*.html',
+    content: [
+        './src/**/*.html',
         './src/**/*.jsx',
         './src/**/*.tsx',
-	],
-	defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || [],
+    ],
+    defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || [],
 
 })
 
@@ -29,12 +29,12 @@ module.exports = (env, args) => {
 
 
     return {
-        mode: (production)?"production" : "development",
+        mode: (production) ? "production" : "development",
         entry: './src/index.tsx',
         output: {
             filename: '[hash].bundle.js',
             path: __dirname + '/build',
-            publicPath: "/BooleanCurse/",
+            publicPath: (production) ? "/BooleanCurse/" : "/",
         },
         devtool: production ? false : 'source-map',
         resolve: {
@@ -61,15 +61,15 @@ module.exports = (env, args) => {
                                 {
                                     loader: MiniCssExtractPlugin.loader,
                                     options: {
-                                       
+
                                     }
                                 },
                             ]
                             : [
                                 'style-loader'
                             ]),
-                        
-                  
+
+
                         {
                             loader: 'css-loader',
                             options: {
@@ -87,7 +87,7 @@ module.exports = (env, args) => {
                                     require("postcss-extend")(), // Add support for sass-like '@extend'
                                     require("postcss-nesting")(), // Add support for sass-like nesting of rules
                                     require("tailwindcss"),
-     
+
                                     ...(production
                                         ? [
                                             // If not dev then build with these
@@ -116,13 +116,13 @@ module.exports = (env, args) => {
         },
 
         plugins: [
-            new HtmlWebpackPlugin({ 
+            new HtmlWebpackPlugin({
                 template: './src/index.html',
                 cache: false,
                 minify: true
             }),
-           
-            new MiniCssExtractPlugin(),          
+
+            new MiniCssExtractPlugin(),
             new CopyWebpackPlugin([
                 // static files to the site root folder (index and robots)
                 {
@@ -132,7 +132,7 @@ module.exports = (env, args) => {
                     flatten: true
                 },
             ]),
-            ...(production)?[
+            ...(production) ? [
                 new GenerateSW({}), // Don't add brotli files
                 new CompressionWebpackPlugin({ // Gzip
                     compressionOptions: {
@@ -151,7 +151,7 @@ module.exports = (env, args) => {
                     minRatio: 0.9,
                     deleteOriginalAssets: false,
                 }),
-               
+
             ] : []
         ]
     }

@@ -1,6 +1,12 @@
-import { h, render } from 'preact';
-import './style/index';
-import App from './components/app';
+import { h, render } from "preact";
+import "./style/index";
+import App from "./components/app";
+
+if (process.env.NODE_ENV === "development") {
+	// Must use require here as import statements are only allowed
+	// to exist at the top of a file.
+	require("preact/debug");
+}
 
 function renderApp() {
 	render(
@@ -12,20 +18,19 @@ function renderApp() {
 }
 //start the process
 
-
 // @ts-ignore
 if (module.hot) {
-    // @ts-ignore
+	// @ts-ignore
 
-	module.hot.accept() // already had this init code
-	 // @ts-ignore 
-	module.hot.accept('./', renderApp);
+	module.hot.accept(); // already had this init code
+	// @ts-ignore
+	module.hot.accept("./", renderApp);
 
-    // @ts-ignore
+	// @ts-ignore
 
-    module.hot.addStatusHandler(status => {
-        if (status === 'prepare') console.clear()
-    })
+	module.hot.addStatusHandler((status) => {
+		if (status === "prepare") console.clear();
+	});
 }
 
 renderApp(); // Initial render
@@ -35,11 +40,13 @@ renderApp(); // Initial render
 // Learn more about service workers: https://bit.ly/CRA-PWA
 
 // Navigator
-if ('serviceWorker' in navigator) {
+if ("serviceWorker" in navigator) {
 	// Use the window load event to keep the page load performant
-	window.addEventListener('load', () => {
-	// @ts-ignore
-	  navigator.serviceWorker.register(((__webpack_public_path__)? __webpack_public_path__: "") + '/service-worker.js');
+	window.addEventListener("load", () => {
+		// @ts-ignore
+		navigator.serviceWorker.register(
+			// @ts-ignore
+			(__webpack_public_path__ ? __webpack_public_path__ : "") + "/service-worker.js"
+		);
 	});
-  }
-  
+}
