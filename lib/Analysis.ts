@@ -113,12 +113,9 @@ export function Samdv(fn: string) {
 export function monoSlow(fn: string) {
     // Check every possible combo
     for (let i = 0; i < fn.length; i++) {
-        let first = i.toString(2); // 2ичное представление
-
         for (let j = 0; j < fn.length; j++) {
-            let second = j.toString(2);
             // Если сравнимы то проверяем
-            if (isComparable(first, second)) {
+            if (isComparable(i, j)) {
                 // Если первый больше 2-го то нарушается условие
                 if (fn[i] > fn[j]) return false;
             }
@@ -159,28 +156,8 @@ export function pascal(fn: string): string {
  * @param a первый
  * @param b второй
  */
-function isComparable(a: string, b: string) {
-    let first = a;
-    let second = b;
-
-    // Сравнять длину
-    if (second.length < first.length) {
-        let difference = first.length - second.length;
-        for (let i = 0; i < difference; i++) second = "0" + second.toString();
-    }
-    if (second.length > first.length) {
-        let difference = second.length - first.length;
-        for (let i = 0; i < difference; i++) first = "0" + first.toString();
-    }
-
-    // 
-    for (let i = 0; i < second.length; i++) {
-        if (first[i] > second[i]) {
-            return false;
-        }
-    }
-    // console.log(first + " " + second)
-    return true;
+function isComparable(a: number, b: number) {
+   return ((~a) | b) == -1; // -1 - значит истина (a->b)
 }
 
 /**
@@ -191,31 +168,12 @@ export function linear(fn: string) {
 
     // We can not check for zero
     for (let i = 1; i < pas.length; i++) {
-        if (!singleVariable(i)) {
+        if (i % 2 !== 0 && i != 1) {
             if (pas[i] != "0") {
                 return false;
             }
         }
 
-    }
-    return true;
-}
-
-/**
- * Проверка на содержание только одной 1 
- * в двоичной записи числа
- * @param n число в десятичном варинте
- */
-export function singleVariable(n: number) {
-    let booleanRepresentation = n.toString(2);
-    let count = 0;
-
-    for (let i = 0; i < booleanRepresentation.length; i++) {
-        if (booleanRepresentation[i] == "1") {
-            if (++count > 1) {
-                return false
-            }
-        }
     }
     return true;
 }
