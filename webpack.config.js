@@ -122,7 +122,9 @@ module.exports = (env, args) => {
                 minify: true
             }),
 
-            new MiniCssExtractPlugin(),
+            new MiniCssExtractPlugin({
+                filename:"[hash].main.css"
+            }),
             new CopyWebpackPlugin([
                 // static files to the site root folder (index and robots)
                 {
