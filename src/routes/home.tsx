@@ -112,6 +112,9 @@ export default class Home extends Component<
 	render() {
 		return (
 			<div>
+				<h3 className="text-center">
+					Быстрый Ввод
+				</h3>
 				<OpKeyboard onAdd={this.fastAdd.bind(this)} />
 
 				<div className="flex">
@@ -122,12 +125,12 @@ export default class Home extends Component<
 						Добавить формулу
 					</button>
 
-					<button
+					{/* <button
 						class="block mx-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
 						onClick={this.calculate.bind(this)}
 					>
 						Вычислить
-					</button>
+					</button> */}
 				</div>
 
 				<h3>

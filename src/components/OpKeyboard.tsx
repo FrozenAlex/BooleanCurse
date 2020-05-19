@@ -1,7 +1,7 @@
 import { Component, Fragment, h, JSX } from "preact";
 
 let singleOps = [
-	"1","0", "->", "and", "or", "xor", "pierce", "sheffer", "not"
+	"1","0", "x", "->", "and", "or", "xor", "pierce", "sheffer", "not"
 ]
 
 export default class OpKeyboard extends Component<

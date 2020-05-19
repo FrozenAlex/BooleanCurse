@@ -7,6 +7,7 @@ export const singleOperators = {
     "pierce": "1000",
     "sheffer": "1110",
     "not": "10",
+    "x":"01",
     "1": "1",
     "0": "0"
 }

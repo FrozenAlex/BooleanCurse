@@ -28,9 +28,9 @@ export function checkCompleteness(fns: Array<string>) {
 
     // Для более наглядного примера создаем массив результатов
     // Исключить пустые функции
-    let elements = fns.filter((element)=> element !="");
+    let elements = fns.filter((element) => element != "");
 
-    let functionData = elements.map((element)=> analyzeFunctionString(element))
+    let functionData = elements.map((element) => analyzeFunctionString(element))
 
     // Сравнить все
     functionData.map((data: FunctionProperties) => {
@@ -41,14 +41,14 @@ export function checkCompleteness(fns: Array<string>) {
         if (!data.linear) result.linear = false;
     })
 
-    let isFull = ( 
+    let isFull = (
         !result.keepsOne &&
         !result.keepsZero &&
         !result.s &&
         !result.mono &&
         !result.linear
     )
- 
+
     return {
         isFull,
         results: functionData
@@ -64,7 +64,7 @@ export function analyzeFunctionString(fn: string) {
     if (!fn || fn == "") throw Error("Пустая функция")
     let shift = fn.length;
     if ((shift - 1) & shift) {
-        throw new Error("Not a boolean funcion")
+        throw new Error("Кортеж " + fn + " не является булевой функцией")
     }
     // Then we have one variable
     let result = {
@@ -78,18 +78,24 @@ export function analyzeFunctionString(fn: string) {
     return result;
 }
 
-// Сохраняет 0
+/**
+ * Проверка на сохранение 0
+ */
 export function keepsZero(fn: string) {
     return fn[0] === "0";
 }
 
-// Сохраняет 1
+/**
+ * Проверка на сохранение 1
+ */
 export function keepsOne(fn: string) {
     return fn[fn.length - 1] == "1";
 }
 
-// Самодвойственная
-
+/**
+ * Проверка функции на самодвойственность
+ * @param fn 
+ */
 export function Samdv(fn: string) {
     for (var i = 0; i < fn.length / 2; i++) {
         if (fn[i] === fn[fn.length - 1 - i]) {
@@ -97,26 +103,6 @@ export function Samdv(fn: string) {
         }
     }
     return true;
-}
-
-
-
-
-export function mono(fn: string) {
-    let shift = fn.length;
-
-    while ((shift /= 2) > 0) {
-        let i = 0;
-        while (i < fn.length) {
-            for (let j = shift; i < fn.length; (j-- + ++i)) {
-                if (fn[i] > fn[i + shift]) {
-                    // Монотонность нарушена
-                    return false;
-                }
-            }
-        }
-        i += shift;
-    }
 }
 
 /**
@@ -140,7 +126,18 @@ export function monoSlow(fn: string) {
     return true;
 }
 
-// Рекурсивный треугольник паскаля
+/**
+ * Рекурсивный треугольник паскаля для построения
+ * полинома Жегалкина
+ * Возвращается левая сторона треугольника
+ * 1   0   0   0   0   0
+ *   1   0   0   0   0
+ *     1   0   0   0
+ *       1   0   0
+ *         1   0
+ *           1
+ * @param fn 
+ */
 export function pascal(fn: string): string {
 
     let result = "";
@@ -155,9 +152,16 @@ export function pascal(fn: string): string {
     return fn[0] + pascal(result);
 }
 
+/**
+ * Проверка двух наборов значений переменных на сравнимость
+ * Используется в проверке на монотонность
+ * @param a первый
+ * @param b второй
+ */
 function isComparable(a: string, b: string) {
     let first = a;
     let second = b;
+
     // Сравнять длину
     if (second.length < first.length) {
         let difference = first.length - second.length;
@@ -179,17 +183,15 @@ function isComparable(a: string, b: string) {
 }
 
 /**
- * Проверка функции на линейность по полиному Жегалкина
+ * Проверка функции на линейность при помощи полинома Жегалкина
  */
 export function linear(fn: string) {
-    let array = fn.split("");
-    let polin = pascal(fn);
-
+    let pas = pascal(fn);
 
     // We can not check for zero
-    for (let i = 1; i < polin.length; i++) {
+    for (let i = 1; i < pas.length; i++) {
         if (!singleVariable(i)) {
-            if (polin[i] != "0") {
+            if (pas[i] != "0") {
                 return false;
             }
         }
@@ -198,7 +200,11 @@ export function linear(fn: string) {
     return true;
 }
 
-// Checks to see if the corresponding number has only one 1
+/**
+ * Проверка на содержание только одной 1 
+ * в двоичной записи числа
+ * @param n число в десятичном варинте
+ */
 export function singleVariable(n: number) {
     let booleanRepresentation = n.toString(2);
     let count = 0;
@@ -213,9 +219,11 @@ export function singleVariable(n: number) {
     return true;
 }
 
+/**
+ * Булево сложение
+ * @param a первый операнд
+ * @param b второй операнд
+ */
 function boolPlus(a: string, b: string) {
-    if (a == "1" && b == "1") return "0";
-    if (a == "1" && b == "0") return "1";
-    if (a == "0" && b == "1") return "1";
-    if (a == "0" && b == "0") return "0";
+    return (parseInt(a) ^ parseInt(b))
 }
