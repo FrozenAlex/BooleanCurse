@@ -17,14 +17,12 @@ export default class Equation extends Component<
 		super(props);
 	}
 
-
-
 	// Pass changes to the root component
 	onChangeHandler(e: any) {
 		e.preventDefault();
 		// Фильтруем значения здесь
 		let value = e.target.value;
-	    this.props?.onChange(this.props.id, value);
+		this.props?.onChange(this.props.id, value);
 	}
 
 	render() {
@@ -37,7 +35,12 @@ export default class Equation extends Component<
 						value={this.props.value}
 						onInput={this.onChangeHandler.bind(this)}
 					></input>
-                    <button onClick={this.props?.onDelete.bind(this)} className="block mx-auto bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4">X</button>
+					<button
+						onClick={this.props?.onDelete.bind(this)}
+						className="block mx-auto bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4"
+					>
+						X
+					</button>
 				</div>
 			</Fragment>
 		);

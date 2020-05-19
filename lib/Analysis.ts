@@ -31,9 +31,10 @@ export function checkCompleteness(fns: Array<string>) {
     let elements = fns.filter((element) => element != "");
 
     let functionData = elements.map((element) => analyzeFunctionString(element))
+       
 
     // Сравнить все
-    functionData.map((data: FunctionProperties) => {
+    functionData.forEach((data: FunctionProperties) => {
         if (!data.keepsOne) result.keepsOne = false;
         if (!data.keepsZero) result.keepsZero = false;
         if (!data.s) result.s = false;

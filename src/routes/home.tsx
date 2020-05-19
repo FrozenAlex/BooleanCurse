@@ -1,12 +1,9 @@
 import { Component, h, JSX } from "preact";
-import {
-	analyzeFunctionString,
-	FunctionProperties,
-	checkCompleteness,
-} from "../../lib/Analysis";
+import { checkCompleteness } from "../../lib/Analysis";
 import Equation from "../components/Equation";
 import OpKeyboard from "../components/OpKeyboard";
 import { parseFunction } from "../../lib/Parser";
+import ResultCard from "../components/ResultCard";
 
 export default class Home extends Component<
 	{},
@@ -14,29 +11,60 @@ export default class Home extends Component<
 		equations: Array<string>;
 		input: string;
 		output: string;
+		results: Array<{
+			source: string;
+			cortege: any;
+			properties: {
+				keepsZero: boolean;
+				keepsOne: boolean;
+				s: boolean;
+				mono: boolean;
+				linear: boolean;
+			};
+		}>;
 	}
 > {
 	constructor(props) {
 		super(props);
 		this.state = {
-			equations: [""],
+			equations: ["and", "->"],
 			input: "",
 			output: "",
+			results: [],
 		};
+	}
+
+	componentDidMount() {
+		this.calculate();
 	}
 
 	calculate() {
 		try {
-			let tables = this.state.equations.map((equation) => parseFunction(equation));
-			let result = checkCompleteness(tables);
+			// Избавиться от пустых выражений
+			let equations = this.state.equations.filter(
+				(element) => element != "" && element != " "
+			);
+			let parsedEquations = equations.map((equation) => parseFunction(equation));
+			let result = checkCompleteness(parsedEquations);
+
+			let results = result.results.map((element, index) => {
+				return {
+					source: equations[index],
+					cortege: parsedEquations[index],
+					properties: element,
+				};
+			});
+
 			this.setState({
 				output: `Система функций ${result.isFull ? "полна" : "не полна"}`,
+				results: results,
 			});
 		} catch (err) {
 			console.error(err);
 			this.setState({
 				output: err.message,
 			});
+			return [];
 		}
 	}
 
@@ -48,17 +76,16 @@ export default class Home extends Component<
 				},
 				this.calculate
 			);
-		} else if (this.state.equations[this.state.equations.length-1] == ""){
-			let equations =  [...this.state.equations]
-			equations[this.state.equations.length-1] = equation;
+		} else if (this.state.equations[this.state.equations.length - 1] == "") {
+			let equations = [...this.state.equations];
+			equations[this.state.equations.length - 1] = equation;
 			this.setState(
 				{
-					equations: equations
+					equations: equations,
 				},
 				this.calculate
 			);
-		}
-		else {
+		} else {
 			this.setState(
 				{
 					equations: [...this.state.equations, equation],
@@ -75,9 +102,9 @@ export default class Home extends Component<
 				{
 					equations: [...this.state.equations, ""],
 				},
-				()=>{
-					this.calculate()
-					resolve()
+				() => {
+					this.calculate();
+					resolve();
 				}
 			);
 		});
@@ -96,9 +123,8 @@ export default class Home extends Component<
 				if (this.state.equations.length == 0) {
 					await this.add();
 				} else {
-					this.calculate()
+					this.calculate();
 				}
-				
 			}
 		);
 	}
@@ -112,9 +138,7 @@ export default class Home extends Component<
 	render() {
 		return (
 			<div>
-				<h3 className="text-center">
-					Быстрый Ввод
-				</h3>
+				<h3 className="text-center">Быстрый Ввод</h3>
 				<OpKeyboard onAdd={this.fastAdd.bind(this)} />
 
 				<div className="flex">
@@ -150,6 +174,12 @@ export default class Home extends Component<
 
 				<div id="output" className="text-center my-3">
 					{this.state.output}
+				</div>
+
+				<div>
+					{this.state.results.map((element) => (
+						<ResultCard result={element}></ResultCard>
+					))}
 				</div>
 			</div>
 		);
