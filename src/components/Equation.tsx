@@ -17,17 +17,14 @@ export default class Equation extends Component<
 		super(props);
 	}
 
+
+
 	// Pass changes to the root component
 	onChangeHandler(e: any) {
 		e.preventDefault();
 		// Фильтруем значения здесь
 		let value = e.target.value;
-		let regex = /[^10]+/g;
-		if (value && regex.test(value)) {
-			e.target.value = this.props.value;
-		} else {
-			this.props?.onChange(this.props.id, value);
-		}
+	    this.props?.onChange(this.props.id, value);
 	}
 
 	render() {

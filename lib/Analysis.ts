@@ -26,28 +26,33 @@ export function checkCompleteness(fns: Array<string>) {
         linear: true,
     }
 
-    // Проверяем каждую функцию на принадлежность классам
-    fns.forEach((element) => {
-        if (element !== "") {
-            let data = analyzeFunctionString(element);
+    // Для более наглядного примера создаем массив результатов
+    // Исключить пустые функции
+    let elements = fns.filter((element)=> element !="");
 
-            if (!data.keepsOne) result.keepsOne = false;
-            if (!data.keepsZero) result.keepsZero = false;
-            if (!data.s) result.s = false;
-            if (!data.mono) result.mono = false;
-            if (!data.linear) result.linear = false;
-        }
+    let functionData = elements.map((element)=> analyzeFunctionString(element))
+
+    // Сравнить все
+    functionData.map((data: FunctionProperties) => {
+        if (!data.keepsOne) result.keepsOne = false;
+        if (!data.keepsZero) result.keepsZero = false;
+        if (!data.s) result.s = false;
+        if (!data.mono) result.mono = false;
+        if (!data.linear) result.linear = false;
     })
 
-    console.info(result)
-
-    return ( 
+    let isFull = ( 
         !result.keepsOne &&
         !result.keepsZero &&
         !result.s &&
         !result.mono &&
         !result.linear
     )
+ 
+    return {
+        isFull,
+        results: functionData
+    }
 }
 
 

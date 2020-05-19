@@ -99,18 +99,8 @@ describe("Test basic functions", () => {
 		});
         });
 
-        test("False", () => {
-		expect(analyzeFunctionString("0")).toMatchObject({
-			keepsZero: true,
-			keepsOne: false,
-			mono: true,
-                        linear: true,
-                        s: false,
-		});
-        });
-
         test("Implication", () => {
-		expect(analyzeFunctionString("1101")).toMatchObject({
+		expect(analyzeFunctionString("1011")).toMatchObject({
 			keepsZero: false,
 			keepsOne: true,
 			mono: false,
@@ -119,15 +109,5 @@ describe("Test basic functions", () => {
 		});
         });
         
-        //  test("Pierce", () => {
-	// 	// expect(analyzeFunctionString("1000")).toBe({
-	// 	// 	keepsZero: false,
-	// 	// 	keepsOne: false,
-	// 	// 	mono: false,
-        //         //         linear: false,
-        //         //         s: false,
-        //         // });
-        //         console.log("Loloolol "+ singleVariable(4)); 
-        // });
             
 });
