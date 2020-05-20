@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import { Router, RouterOnChangeArgs } from 'preact-router';
+import { RouterOnChangeArgs } from 'preact-router';
 
 import Header from './header';
 
@@ -22,9 +22,7 @@ export default class App extends Component {
 		return (
 			<div id="app" className="mx-auto max-w-md">
 				<Header />
-				{/* <Router  onChange={this.handleRoute}> */}
-					<Home />
-				{/* </Router> */}
+				<Home />
 			</div>
 		);
 	}

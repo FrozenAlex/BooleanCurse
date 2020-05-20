@@ -1,6 +1,25 @@
 import {
 	analyzeFunctionString,
 } from "../lib/Analysis";
+import { evalFunction } from "../lib/Parser";
+
+describe("Test parser", () => {
+	test("And", () => {
+		expect(evalFunction("a and b")).toBe("0001");
+	})
+
+	test("And or", () => {
+		expect(evalFunction("a and b or c")).toBe("01010111");
+	})
+
+	test("()", () => {
+		expect(evalFunction("a and (b or c)")).toBe("00000111");
+	})
+
+	test("const", () => {
+		expect(evalFunction("a and 1")).toBe("01");
+	})
+})
 
 describe("Test basic functions", () => {
 	test("Not", () => {

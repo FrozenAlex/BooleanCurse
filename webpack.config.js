@@ -155,7 +155,10 @@ module.exports = (env, args) => {
                 }),
 
             ] : []
-        ]
+        ],
+        optimization: {
+            usedExports: true,
+        }
     }
 
 };

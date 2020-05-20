@@ -1,5 +1,29 @@
+import {
+    create,
+    // booleanDependencies,
+    parseDependencies,
+    andDependencies,
+    orDependencies,
+    xorDependencies,
+    notDependencies,
+    compareDependencies
+  } from 'mathjs'
+  
+  // Create just the functions we need
+  const { parse, pow } = create({
+    // booleanDependencies,
+    parseDependencies,
+    andDependencies,
+    orDependencies,
+    xorDependencies,
+    notDependencies,
+    compareDependencies
+  }, {})
+
+
+
 export const singleOperators = {
-    "->": "1011",
+    "->": "1101",
     "^": "0001",
     "and": "0001",
     "or": "0111",
@@ -28,8 +52,68 @@ export function parseFunction(fn:string){
     if (!regex.test(fn)) 
          return fn;
 
-    throw new Error(`Неверный формат функции ${fn}`);
+    // Если это не кортэж, пробуем его составить
+    try {
+        console.log(evalFunction(fn))
+        return evalFunction(fn)
+    } catch(err) {
+        throw new Error(`Неверный формат функции ${fn}`);
+    }
+    // TODO: булевы выражения
+
+}
+
+/**
+ * Дает на выходе таблицу истинности
+ * @param fn 
+ */
+export function evalFunction(fn:string){
+    let expression = parse(fn);
+    
+    // Получить все переменные
+    let a = parseSyntaxTree(expression.args);
+
+    let n = a.length;
+    let comp = expression.compile();
+    
+    // нет переменных
+    if (!n || n == 0) return (comp.evaluate() as number)?"1":"0";
+
+    // @ts-ignore
+    let numb = pow(2, n);
+ 
+    let result = ""
+    for (let i = 0; i<numb ;i++){
+        let scope = {}
+
+        a.forEach((item,index)=>{
+            scope[item] = (i >> (n-index-1)) & 1;
+        })
+
+        result+= (comp.evaluate(scope) as number)?"1":"0";
+    }
     
 
-    // TODO: булевы выражения
+    return result;
+}
+
+function parseSyntaxTree(node: Array<math.MathNode>) {
+    let result = []
+
+    if (!node) return result;
+    node.forEach((item,index) => {
+        if (item.isSymbolNode) {
+            result.push(item.name)
+        } else if (item.args && item.args.length != 0) {
+            result.push(...parseSyntaxTree(item.args))
+        } else if (item.content) {
+            if (item.content.isSymbolNode) {
+                result.push(item.name)
+            } else if (item.content.args && item.content.args.length > 0) {
+                result.push(...parseSyntaxTree(item.content.args))
+            }
+        }
+    })
+
+    return result;
 }
