@@ -107,10 +107,10 @@ module.exports = (env, args) => {
             headers: {
                 'Access-Control-Allow-Origin': '*'
             },
-            contentBase: './build',
+            // contentBase: './build',
             compress: true,
             port: 3030,
-            disableHostCheck: true,
+            // disableHostCheck: true,
             host: '0.0.0.0',
             hot: true,
         },
